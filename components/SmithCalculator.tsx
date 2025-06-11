@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { calculateSmithing } from '../lib/calculations';
 import type { SmithingInput, EquipmentType } from '../lib/types';
-import SaveLoadPanel from './SaveLoadPanel';
+import { saveCurrentData, loadCurrentData } from '../lib/localStorage';
 
 const equipmentTypes: EquipmentType[] = [
   '片手剣',
@@ -90,9 +90,16 @@ export default function SmithCalculator() {
     }));
   };
 
-  const handleLoadData = (loadedInput: SmithingInput) => {
-    setInput(loadedInput);
-  };
+  useEffect(() => {
+    const savedData = loadCurrentData();
+    if (savedData) {
+      setInput(savedData);
+    }
+  }, []);
+
+  useEffect(() => {
+    saveCurrentData(input);
+  }, [input]);
 
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-6 lg:space-y-8">
@@ -363,8 +370,6 @@ export default function SmithCalculator() {
             </div>
           </div>
 
-          {/* 右カラム下: 保存・読み込み */}
-          <SaveLoadPanel currentInput={input} onLoad={handleLoadData} />
         </div>
       </div>
     </div>
