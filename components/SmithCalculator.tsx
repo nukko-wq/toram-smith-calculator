@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { calculateSmithing } from '@/lib/calculations';
-import type { SmithingInput, EquipmentType } from '@/lib/types';
+import { calculateSmithing } from '../lib/calculations';
+import type { SmithingInput, EquipmentType } from '../lib/types';
 import SaveLoadPanel from './SaveLoadPanel';
 
 const equipmentTypes: EquipmentType[] = [

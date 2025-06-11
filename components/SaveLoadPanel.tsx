@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { saveToLocalStorage, getAllSavedData, deleteFromLocalStorage, clearLocalStorage, type SavedData } from '@/lib/localStorage';
-import type { SmithingInput } from '@/lib/types';
+import { saveToLocalStorage, getAllSavedData, deleteFromLocalStorage, clearLocalStorage, type SavedData } from '../lib/localStorage';
+import type { SmithingInput } from '../lib/types';
 
 interface SaveLoadPanelProps {
   currentInput: SmithingInput;
