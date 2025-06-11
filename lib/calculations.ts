@@ -15,22 +15,22 @@ function calculateTotalStr(input: SmithingInput): number {
   
   // STR固定値の合計
   const strFixed = 
-    equipment.main.str +
-    equipment.sub.str +
-    equipment.body.str +
-    equipment.additional.str +
-    equipment.special.str +
-    equipment.fashion.str +
-    food.str;
+    (equipment.main.str ?? 0) +
+    (equipment.sub.str ?? 0) +
+    (equipment.body.str ?? 0) +
+    (equipment.additional.str ?? 0) +
+    (equipment.special.str ?? 0) +
+    (equipment.fashion.str ?? 0) +
+    (food.str ?? 0);
   
   // STR%の合計
   const strPercent = 
-    equipment.main.strPercent +
-    equipment.sub.strPercent +
-    equipment.body.strPercent +
-    equipment.additional.strPercent +
-    equipment.special.strPercent +
-    equipment.fashion.strPercent;
+    (equipment.main.strPercent ?? 0) +
+    (equipment.sub.strPercent ?? 0) +
+    (equipment.body.strPercent ?? 0) +
+    (equipment.additional.strPercent ?? 0) +
+    (equipment.special.strPercent ?? 0) +
+    (equipment.fashion.strPercent ?? 0);
   
   // 総STR = INT(基礎STR × (1 + STR%/100)) + STR固定値
   return intFloor(characterStats.str * (1 + strPercent / 100)) + strFixed;
@@ -44,22 +44,22 @@ function calculateTotalDex(input: SmithingInput): number {
   
   // DEX固定値の合計
   const dexFixed = 
-    equipment.main.dex +
-    equipment.sub.dex +
-    equipment.body.dex +
-    equipment.additional.dex +
-    equipment.special.dex +
-    equipment.fashion.dex +
-    food.dex;
+    (equipment.main.dex ?? 0) +
+    (equipment.sub.dex ?? 0) +
+    (equipment.body.dex ?? 0) +
+    (equipment.additional.dex ?? 0) +
+    (equipment.special.dex ?? 0) +
+    (equipment.fashion.dex ?? 0) +
+    (food.dex ?? 0);
   
   // DEX%の合計
   const dexPercent = 
-    equipment.main.dexPercent +
-    equipment.sub.dexPercent +
-    equipment.body.dexPercent +
-    equipment.additional.dexPercent +
-    equipment.special.dexPercent +
-    equipment.fashion.dexPercent;
+    (equipment.main.dexPercent ?? 0) +
+    (equipment.sub.dexPercent ?? 0) +
+    (equipment.body.dexPercent ?? 0) +
+    (equipment.additional.dexPercent ?? 0) +
+    (equipment.special.dexPercent ?? 0) +
+    (equipment.fashion.dexPercent ?? 0);
   
   // 総DEX = INT(基礎DEX × (1 + DEX%/100)) + DEX固定値
   return intFloor(characterStats.dex * (1 + dexPercent / 100)) + dexFixed;
@@ -74,10 +74,10 @@ function calculateSuccessRate(input: SmithingInput, totalStr: number, totalDex: 
   // 成功率 = 10 + スミス熟練度 + TEC/2 + 総DEX/6 - 難易度 + 総STR/10
   const successRate = 
     10 + 
-    smithProficiency + 
+    (smithProficiency ?? 0) + 
     characterStats.tec / 2 + 
     totalDex / 6 - 
-    difficulty + 
+    (difficulty ?? 0) + 
     totalStr / 10;
   
   // 0-100%の範囲に制限
@@ -141,7 +141,7 @@ export function calculateSmithing(input: SmithingInput): SmithingResult {
   const totalDex = calculateTotalDex(input);
   const successRate = calculateSuccessRate(input, totalStr, totalDex);
   const potentialIncrease = calculatePotentialIncrease(input);
-  const finalPotential = input.basePotential + potentialIncrease;
+  const finalPotential = (input.basePotential ?? 0) + potentialIncrease;
   
   return {
     successRate,
