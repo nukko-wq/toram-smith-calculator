@@ -117,11 +117,11 @@ export default function SmithCalculator() {
         トーラム スミス成功率計算ツール
       </h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] gap-6 lg:gap-8">
         {/* 左カラム: キャラクターステータス */}
         <div className="space-y-4 lg:space-y-6">
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">キャラクターステータス</h2>
+            <h2 className="text-xl font-semibold mb-4">ステータス</h2>
             <div className="grid grid-cols-2 gap-4">
               {Object.entries(input.characterStats).map(([stat, value]) => (
                 <div key={stat}>
@@ -134,15 +134,84 @@ export default function SmithCalculator() {
                     max="999"
                     value={value}
                     onChange={(e) => updateCharacterStat(stat as keyof typeof input.characterStats, parseInt(e.target.value) || 1)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               ))}
             </div>
           </div>
 
+
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">料理効果</h2>
+            <h2 className="text-xl font-semibold mb-4">スキル・熟練度</h2>
+            <div className="space-y-3">
+              {/* 1行目: スミス熟練度, 装備製作 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">スミス熟練度</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={input.smithProficiency}
+                    onChange={(e) => setInput(prev => ({
+                      ...prev,
+                      smithProficiency: Math.max(0, parseInt(e.target.value) || 0)
+                    }))}
+                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">装備製作</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={input.skills.equipmentCrafting}
+                    onChange={(e) => setInput(prev => ({
+                      ...prev,
+                      skills: { ...prev.skills, equipmentCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
+                    }))}
+                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              
+              {/* 2行目: 丁寧な制作, 匠の製作技術 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">丁寧な制作</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={input.skills.carefulCrafting}
+                    onChange={(e) => setInput(prev => ({
+                      ...prev,
+                      skills: { ...prev.skills, carefulCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
+                    }))}
+                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">匠の製作技術</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={input.skills.masterCrafting}
+                    onChange={(e) => setInput(prev => ({
+                      ...prev,
+                      skills: { ...prev.skills, masterCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
+                    }))}
+                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4">料理</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">STR</label>
@@ -151,7 +220,7 @@ export default function SmithCalculator() {
                   min="0"
                   value={input.food.str}
                   onChange={(e) => updateFood('str', parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -161,73 +230,13 @@ export default function SmithCalculator() {
                   min="0"
                   value={input.food.dex}
                   onChange={(e) => updateFood('dex', parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">スキル・熟練度</h2>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium mb-1">装備製作</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={input.skills.equipmentCrafting}
-                  onChange={(e) => setInput(prev => ({
-                    ...prev,
-                    skills: { ...prev.skills, equipmentCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
-                  }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">丁寧な制作</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={input.skills.carefulCrafting}
-                  onChange={(e) => setInput(prev => ({
-                    ...prev,
-                    skills: { ...prev.skills, carefulCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
-                  }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">匠の製作技術</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={input.skills.masterCrafting}
-                  onChange={(e) => setInput(prev => ({
-                    ...prev,
-                    skills: { ...prev.skills, masterCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
-                  }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">スミス熟練度</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={input.smithProficiency}
-                  onChange={(e) => setInput(prev => ({
-                    ...prev,
-                    smithProficiency: Math.max(0, parseInt(e.target.value) || 0)
-                  }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-          </div>
-
+          {/* 製作対象 */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">製作対象</h2>
             <div className="space-y-3">
@@ -239,7 +248,7 @@ export default function SmithCalculator() {
                     ...prev,
                     equipmentType: e.target.value as EquipmentType
                   }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   {equipmentTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -255,7 +264,7 @@ export default function SmithCalculator() {
                     ...prev,
                     difficulty: parseInt(e.target.value) || 0
                   }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -267,7 +276,7 @@ export default function SmithCalculator() {
                     ...prev,
                     basePotential: parseInt(e.target.value) || 0
                   }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -278,66 +287,171 @@ export default function SmithCalculator() {
         <div className="space-y-4 lg:space-y-6 lg:col-span-2 xl:col-span-1">
           <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">装備品プロパティ</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
-              {Object.entries(input.equipment).map(([slot, stats]) => (
-                <div key={slot} className="border border-gray-200 rounded-lg p-3">
-                  <h3 className="text-sm font-medium mb-2">
-                    {slot === 'main' ? 'メイン武器' :
-                     slot === 'sub' ? 'サブ武器' :
-                     slot === 'body' ? '体装備' :
-                     slot === 'additional' ? '追加装備' :
-                     slot === 'special' ? '特殊装備' :
-                     'オシャレ装備'}
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-xs font-medium mb-1">STR</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={stats.str}
-                        onChange={(e) => updateEquipmentStat(slot as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
+            <div className="space-y-4">
+              {/* 1行目: メイン武器, サブ武器 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[{key: 'main', name: 'メイン武器'}, {key: 'sub', name: 'サブ武器'}].map(({key, name}) => {
+                  const stats = input.equipment[key as keyof typeof input.equipment];
+                  return (
+                    <div key={key} className="border border-gray-200 rounded-lg p-3">
+                      <h3 className="text-sm font-medium mb-2">{name}</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-medium mb-1">DEX</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.dex}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">STR</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.str}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">DEX%</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.dexPercent}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">STR%</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.strPercent}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium mb-1">STR%</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={stats.strPercent}
-                        onChange={(e) => updateEquipmentStat(slot as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
+                  );
+                })}
+              </div>
+              
+              {/* 2行目: 体装備, 追加装備 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[{key: 'body', name: '体装備'}, {key: 'additional', name: '追加装備'}].map(({key, name}) => {
+                  const stats = input.equipment[key as keyof typeof input.equipment];
+                  return (
+                    <div key={key} className="border border-gray-200 rounded-lg p-3">
+                      <h3 className="text-sm font-medium mb-2">{name}</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-medium mb-1">DEX</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.dex}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">STR</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.str}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">DEX%</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.dexPercent}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">STR%</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.strPercent}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium mb-1">DEX</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={stats.dex}
-                        onChange={(e) => updateEquipmentStat(slot as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
+                  );
+                })}
+              </div>
+              
+              {/* 3行目: 特殊装備, オシャレ装備 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[{key: 'special', name: '特殊装備'}, {key: 'fashion', name: 'オシャレ装備'}].map(({key, name}) => {
+                  const stats = input.equipment[key as keyof typeof input.equipment];
+                  return (
+                    <div key={key} className="border border-gray-200 rounded-lg p-3">
+                      <h3 className="text-sm font-medium mb-2">{name}</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="block text-xs font-medium mb-1">DEX</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.dex}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">STR</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.str}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">DEX%</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.dexPercent}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium mb-1">STR%</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={stats.strPercent}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium mb-1">DEX%</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={stats.dexPercent}
-                        onChange={(e) => updateEquipmentStat(slot as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* 右カラム: 計算結果と保存機能 */}
+        {/* 計算結果と保存機能 */}
         <div className="space-y-4 lg:space-y-6 lg:col-span-2 xl:col-span-1">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">計算結果</h2>
@@ -379,6 +493,8 @@ export default function SmithCalculator() {
               </div>
             </div>
           </div>
+
+        </div>
 
         </div>
       </div>
