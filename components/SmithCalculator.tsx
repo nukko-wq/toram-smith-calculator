@@ -18,38 +18,41 @@ const equipmentTypes: EquipmentType[] = [
   '体防具'
 ];
 
+const defaultInput: SmithingInput = {
+  characterStats: {
+    str: 1,
+    dex: 1,
+    vit: 1,
+    agi: 1,
+    int: 1,
+    tec: 1,
+  },
+  equipment: {
+    main: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+    sub: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+    body: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+    additional: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+    special: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+    fashion: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+  },
+  food: {
+    str: 0,
+    dex: 0,
+  },
+  skills: {
+    equipmentCrafting: 10,
+    carefulCrafting: 10,
+    masterCrafting: 10,
+  },
+  smithProficiency: 0,
+  equipmentType: '片手剣',
+  difficulty: 0,
+  basePotential: 0,
+};
+
 export default function SmithCalculator() {
-  const [input, setInput] = useState<SmithingInput>({
-    characterStats: {
-      str: 1,
-      dex: 1,
-      vit: 1,
-      agi: 1,
-      int: 1,
-      tec: 1,
-    },
-    equipment: {
-      main: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-      sub: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-      body: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-      additional: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-      special: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-      fashion: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-    },
-    food: {
-      str: 0,
-      dex: 0,
-    },
-    skills: {
-      equipmentCrafting: 10,
-      carefulCrafting: 10,
-      masterCrafting: 10,
-    },
-    smithProficiency: 0,
-    equipmentType: '片手剣',
-    difficulty: 0,
-    basePotential: 0,
-  });
+  const [input, setInput] = useState<SmithingInput>(defaultInput);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const result = calculateSmithing(input);
 
@@ -95,15 +98,22 @@ export default function SmithCalculator() {
     if (savedData) {
       setInput(savedData);
     }
+    setIsLoaded(true);
   }, []);
 
   useEffect(() => {
-    saveCurrentData(input);
-  }, [input]);
+    if (isLoaded) {
+      saveCurrentData(input);
+    }
+  }, [input, isLoaded]);
+
+  if (!isLoaded) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-6 lg:space-y-8">
-      <h1 className="text-2xl lg:text-3xl font-bold text-center mb-6 lg:mb-8 text-blue-600">
+      <h1 className="text-xl lg:text-3xl font-bold text-center mb-4 lg:mb-6 text-blue-600">
         トーラム スミス成功率計算ツール
       </h1>
       
