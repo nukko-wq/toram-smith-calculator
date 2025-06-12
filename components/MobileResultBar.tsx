@@ -17,12 +17,6 @@ export default function MobileResultBar({ result }: MobileResultBarProps) {
           <div className="text-xs text-gray-600">成功率</div>
         </div>
         
-        <div className="flex-1 text-center border-l border-gray-200">
-          <div className="text-lg font-bold text-green-600">
-            {result.potentialIncrease.toFixed(1)}
-          </div>
-          <div className="text-xs text-gray-600">潜在値上昇</div>
-        </div>
         
         <div className="flex-1 text-center border-l border-gray-200">
           <div className="text-lg font-bold text-purple-600">
