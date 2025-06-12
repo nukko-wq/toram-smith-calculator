@@ -20,12 +20,12 @@ const equipmentTypes: EquipmentType[] = [
 
 const defaultInput: SmithingInput = {
   characterStats: {
-    str: 1,
-    dex: 1,
-    vit: 1,
-    agi: 1,
-    int: 1,
-    tec: 1,
+    str: undefined,
+    dex: undefined,
+    vit: undefined,
+    agi: undefined,
+    int: undefined,
+    tec: undefined,
   },
   equipment: {
     main: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
@@ -56,12 +56,12 @@ export default function SmithCalculator() {
 
   const result = calculateSmithing(input);
 
-  const updateCharacterStat = (stat: keyof typeof input.characterStats, value: number) => {
+  const updateCharacterStat = (stat: keyof typeof input.characterStats, value: number | undefined) => {
     setInput(prev => ({
       ...prev,
       characterStats: {
         ...prev.characterStats,
-        [stat]: Math.max(1, Math.min(999, value)),
+        [stat]: value === undefined ? undefined : Math.max(1, Math.min(999, value)),
       },
     }));
   };
@@ -123,17 +123,25 @@ export default function SmithCalculator() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">ステータス</h2>
             <div className="grid grid-cols-2 gap-4">
-              {Object.entries(input.characterStats).map(([stat, value]) => (
+              {(['str', 'dex', 'vit', 'agi', 'int', 'tec'] as const).map((stat) => (
                 <div key={stat}>
                   <label className="block text-sm font-medium mb-1">
                     {stat.toUpperCase()}
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min="0"
                     max="999"
-                    value={value}
-                    onChange={(e) => updateCharacterStat(stat as keyof typeof input.characterStats, parseInt(e.target.value) || 1)}
+                    value={input.characterStats[stat] ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '') {
+                        updateCharacterStat(stat, undefined);
+                      } else {
+                        const numValue = parseInt(value);
+                        updateCharacterStat(stat, isNaN(numValue) ? 1 : numValue);
+                      }
+                    }}
                     className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>

@@ -33,7 +33,7 @@ function calculateTotalStr(input: SmithingInput): number {
     (equipment.fashion.strPercent ?? 0);
   
   // 総STR = INT(基礎STR × (1 + STR%/100)) + STR固定値
-  return intFloor(characterStats.str * (1 + strPercent / 100)) + strFixed;
+  return intFloor((characterStats.str ?? 1) * (1 + strPercent / 100)) + strFixed;
 }
 
 /**
@@ -62,7 +62,7 @@ function calculateTotalDex(input: SmithingInput): number {
     (equipment.fashion.dexPercent ?? 0);
   
   // 総DEX = INT(基礎DEX × (1 + DEX%/100)) + DEX固定値
-  return intFloor(characterStats.dex * (1 + dexPercent / 100)) + dexFixed;
+  return intFloor((characterStats.dex ?? 1) * (1 + dexPercent / 100)) + dexFixed;
 }
 
 /**
@@ -75,7 +75,7 @@ function calculateSuccessRate(input: SmithingInput, totalStr: number, totalDex: 
   const successRate = 
     10 + 
     (smithProficiency ?? 0) + 
-    characterStats.tec / 2 + 
+    (characterStats.tec ?? 1) / 2 + 
     totalDex / 6 - 
     (difficulty ?? 0) + 
     totalStr / 10;
@@ -90,25 +90,25 @@ function calculateSuccessRate(input: SmithingInput, totalStr: number, totalDex: 
 function calculateBasePotentialIncrease(equipmentType: EquipmentType, stats: CharacterStats): number {
   switch (equipmentType) {
     case '片手剣':
-      return (stats.str + stats.dex) / 20;
+      return ((stats.str ?? 1) + (stats.dex ?? 1)) / 20;
     case '両手剣':
-      return stats.str / 10;
+      return (stats.str ?? 1) / 10;
     case '弓':
-      return (stats.str + stats.dex) / 20;
+      return ((stats.str ?? 1) + (stats.dex ?? 1)) / 20;
     case '自動弓':
-      return stats.dex / 10;
+      return (stats.dex ?? 1) / 10;
     case '杖':
-      return stats.int / 10;
+      return (stats.int ?? 1) / 10;
     case '魔道具':
-      return (stats.int + stats.agi) / 20;
+      return ((stats.int ?? 1) + (stats.agi ?? 1)) / 20;
     case '手甲':
-      return stats.agi / 10;
+      return (stats.agi ?? 1) / 10;
     case '旋風槍':
-      return (stats.str + stats.agi) / 20;
+      return ((stats.str ?? 1) + (stats.agi ?? 1)) / 20;
     case '抜刀剣':
-      return (stats.dex + stats.agi) / 20;
+      return ((stats.dex ?? 1) + (stats.agi ?? 1)) / 20;
     case '体防具':
-      return stats.vit / 10;
+      return (stats.vit ?? 1) / 10;
     default:
       return 0;
   }

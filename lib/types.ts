@@ -11,12 +11,12 @@ export type EquipmentType =
   | '体防具';
 
 export interface CharacterStats {
-  str: number;
-  dex: number;
-  vit: number;
-  agi: number;
-  int: number;
-  tec: number;
+  str: number | undefined;
+  dex: number | undefined;
+  vit: number | undefined;
+  agi: number | undefined;
+  int: number | undefined;
+  tec: number | undefined;
 }
 
 export interface EquipmentStats {
