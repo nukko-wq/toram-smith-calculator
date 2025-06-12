@@ -118,9 +118,9 @@ export default function SmithCalculator() {
         トーラム スミス成功率計算
       </h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] xl:gap-8 gap-6 lg:gap-0 lg:space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] xl:gap-8 gap-6 lg:gap-0 lg:space-y-6">
         {/* 左カラム: キャラクター */}
-        <div className="space-y-4 lg:space-y-0 xl-space-y-6 lg:col-span-3 xl:col-span-1 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:grid-cols-1">
+        <div className="gap-4 md:gap-6 lg:col-span-3 xl:col-span-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1">
           <div className="bg-white p-6 rounded-lg shadow-md order-1">
             <h2 className="text-xl font-semibold mb-4">ステータス</h2>
             <div className="grid grid-cols-2 gap-4">
@@ -329,7 +329,7 @@ export default function SmithCalculator() {
         </div>
 
         {/* 中央カラム: 装備品プロパティ/計算結果 */}
-        <div className="space-y-4 lg:space-y-6 lg:col-span-2 xl:col-span-1">
+        <div className="gap-6 xl:gap-5 lg:col-span-2 xl:col-span-1 flex flex-col">
           <div className="bg-white p-4 lg:p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">装備品プロパティ</h2>
             <div className="space-y-4">
