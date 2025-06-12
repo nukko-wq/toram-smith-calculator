@@ -118,7 +118,7 @@ export default function SmithCalculator() {
         トーラム スミス成功率計算
       </h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] xl:gap-8 gap-6 lg:gap-0 lg:space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] xl:gap-8 gap-4 md:gap-6 lg:gap-0 lg:space-y-6">
         {/* 左カラム: キャラクター */}
         <div className="gap-4 md:gap-6 lg:col-span-3 xl:col-span-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1">
           <div className="bg-white p-6 rounded-lg shadow-md order-1">
