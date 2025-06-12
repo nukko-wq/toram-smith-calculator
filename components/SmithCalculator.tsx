@@ -118,10 +118,10 @@ export default function SmithCalculator() {
         トーラム スミス成功率計算
       </h1>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] xl:gap-8 gap-6 lg:gap-0 lg:space-y-8">
         {/* 左カラム: キャラクターステータス */}
-        <div className="space-y-4 lg:space-y-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="space-y-4 lg:space-y-0 xl-space-y-6 lg:col-span-3 xl:col-span-1 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 xl:grid-cols-1">
+          <div className="bg-white p-6 rounded-lg shadow-md order-1">
             <h2 className="text-xl font-semibold mb-4">ステータス</h2>
             <div className="grid grid-cols-2 gap-4">
               {(['str', 'dex', 'vit', 'agi', 'int', 'tec'] as const).map((stat) => (
@@ -157,7 +157,7 @@ export default function SmithCalculator() {
           </div>
 
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md order-2 md:order-3">
             <h2 className="text-xl font-semibold mb-4">スキル・熟練度</h2>
             <div className="space-y-3">
               {/* 1行目: スミス熟練度, 装備製作 */}
@@ -231,7 +231,7 @@ export default function SmithCalculator() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md order-4">
             <h2 className="text-xl font-semibold mb-4">料理</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -270,7 +270,7 @@ export default function SmithCalculator() {
           </div>
 
           {/* 製作対象 */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md order-3 md:order-2">
             <h2 className="text-xl font-semibold mb-4">製作対象</h2>
             <div className="space-y-3">
               <div>
