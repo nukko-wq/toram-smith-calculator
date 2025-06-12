@@ -11,19 +11,19 @@ export type EquipmentType =
   | '体防具';
 
 export interface CharacterStats {
-  str: number;
-  dex: number;
-  vit: number;
-  agi: number;
-  int: number;
-  tec: number;
+  str: number | undefined;
+  dex: number | undefined;
+  vit: number | undefined;
+  agi: number | undefined;
+  int: number | undefined;
+  tec: number | undefined;
 }
 
 export interface EquipmentStats {
-  dex: number;
-  dexPercent: number;
-  str: number;
-  strPercent: number;
+  dex: number | undefined;
+  dexPercent: number | undefined;
+  str: number | undefined;
+  strPercent: number | undefined;
 }
 
 export interface EquipmentSet {
@@ -36,8 +36,8 @@ export interface EquipmentSet {
 }
 
 export interface FoodBonus {
-  str: number;
-  dex: number;
+  str: number | undefined;
+  dex: number | undefined;
 }
 
 export interface Skills {
@@ -51,10 +51,10 @@ export interface SmithingInput {
   equipment: EquipmentSet;
   food: FoodBonus;
   skills: Skills;
-  smithProficiency: number;
+  smithProficiency: number | undefined;
   equipmentType: EquipmentType;
-  difficulty: number;
-  basePotential: number;
+  difficulty: number | undefined;
+  basePotential: number | undefined;
 }
 
 export interface SmithingResult {

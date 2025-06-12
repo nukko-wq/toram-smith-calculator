@@ -28,26 +28,26 @@ const defaultInput: SmithingInput = {
     tec: 1,
   },
   equipment: {
-    main: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-    sub: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-    body: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-    additional: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-    special: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
-    fashion: { dex: 0, dexPercent: 0, str: 0, strPercent: 0 },
+    main: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
+    sub: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
+    body: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
+    additional: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
+    special: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
+    fashion: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
   },
   food: {
-    str: 0,
-    dex: 0,
+    str: undefined,
+    dex: undefined,
   },
   skills: {
     equipmentCrafting: 10,
     carefulCrafting: 10,
     masterCrafting: 10,
   },
-  smithProficiency: 0,
+  smithProficiency: undefined,
   equipmentType: '片手剣',
-  difficulty: 0,
-  basePotential: 0,
+  difficulty: undefined,
+  basePotential: undefined,
 };
 
 export default function SmithCalculator() {
@@ -56,12 +56,12 @@ export default function SmithCalculator() {
 
   const result = calculateSmithing(input);
 
-  const updateCharacterStat = (stat: keyof typeof input.characterStats, value: number) => {
+  const updateCharacterStat = (stat: keyof typeof input.characterStats, value: number | undefined) => {
     setInput(prev => ({
       ...prev,
       characterStats: {
         ...prev.characterStats,
-        [stat]: Math.max(1, Math.min(999, value)),
+        [stat]: value === undefined ? undefined : Math.max(1, Math.min(999, value)),
       },
     }));
   };
@@ -69,7 +69,7 @@ export default function SmithCalculator() {
   const updateEquipmentStat = (
     slot: keyof typeof input.equipment,
     stat: string,
-    value: number
+    value: number | undefined
   ) => {
     setInput(prev => ({
       ...prev,
@@ -77,18 +77,18 @@ export default function SmithCalculator() {
         ...prev.equipment,
         [slot]: {
           ...prev.equipment[slot],
-          [stat]: Math.max(0, value),
+          [stat]: value === undefined || value === 0 ? undefined : Math.max(0, value),
         },
       },
     }));
   };
 
-  const updateFood = (stat: keyof typeof input.food, value: number) => {
+  const updateFood = (stat: keyof typeof input.food, value: number | undefined) => {
     setInput(prev => ({
       ...prev,
       food: {
         ...prev.food,
-        [stat]: Math.max(0, value),
+        [stat]: value === undefined || value === 0 ? undefined : Math.max(0, value),
       },
     }));
   };
@@ -114,7 +114,7 @@ export default function SmithCalculator() {
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-6 lg:space-y-8">
       <h1 className="text-xl lg:text-3xl font-bold text-center mb-4 lg:mb-6 text-blue-600">
-        トーラム スミス成功率計算ツール
+        トーラム スミス成功率計算
       </h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-[1fr_2fr] gap-6 lg:gap-8">
@@ -123,18 +123,26 @@ export default function SmithCalculator() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold mb-4">ステータス</h2>
             <div className="grid grid-cols-2 gap-4">
-              {Object.entries(input.characterStats).map(([stat, value]) => (
+              {(['str', 'dex', 'vit', 'agi', 'int', 'tec'] as const).map((stat) => (
                 <div key={stat}>
                   <label className="block text-sm font-medium mb-1">
                     {stat.toUpperCase()}
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min="0"
                     max="999"
-                    value={value}
-                    onChange={(e) => updateCharacterStat(stat as keyof typeof input.characterStats, parseInt(e.target.value) || 1)}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={input.characterStats[stat] ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '') {
+                        updateCharacterStat(stat, undefined);
+                      } else {
+                        const numValue = parseInt(value);
+                        updateCharacterStat(stat, isNaN(numValue) ? 1 : numValue);
+                      }
+                    }}
+                    className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
               ))}
@@ -152,12 +160,12 @@ export default function SmithCalculator() {
                   <input
                     type="number"
                     min="0"
-                    value={input.smithProficiency}
+                    value={input.smithProficiency ?? ''}
                     onChange={(e) => setInput(prev => ({
                       ...prev,
-                      smithProficiency: Math.max(0, parseInt(e.target.value) || 0)
+                      smithProficiency: e.target.value === '' ? undefined : Math.max(0, parseInt(e.target.value) || 0)
                     }))}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
                 <div>
@@ -171,7 +179,7 @@ export default function SmithCalculator() {
                       ...prev,
                       skills: { ...prev.skills, equipmentCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
                     }))}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
               </div>
@@ -189,7 +197,7 @@ export default function SmithCalculator() {
                       ...prev,
                       skills: { ...prev.skills, carefulCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
                     }))}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
                 <div>
@@ -203,7 +211,7 @@ export default function SmithCalculator() {
                       ...prev,
                       skills: { ...prev.skills, masterCrafting: Math.max(0, Math.min(10, parseInt(e.target.value) || 0)) }
                     }))}
-                    className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
               </div>
@@ -218,9 +226,9 @@ export default function SmithCalculator() {
                 <input
                   type="number"
                   min="0"
-                  value={input.food.str}
-                  onChange={(e) => updateFood('str', parseInt(e.target.value) || 0)}
-                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  value={input.food.str ?? ''}
+                  onChange={(e) => updateFood('str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                  className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
               <div>
@@ -228,9 +236,9 @@ export default function SmithCalculator() {
                 <input
                   type="number"
                   min="0"
-                  value={input.food.dex}
-                  onChange={(e) => updateFood('dex', parseInt(e.target.value) || 0)}
-                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  value={input.food.dex ?? ''}
+                  onChange={(e) => updateFood('dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                  className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
             </div>
@@ -248,7 +256,7 @@ export default function SmithCalculator() {
                     ...prev,
                     equipmentType: e.target.value as EquipmentType
                   }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 >
                   {equipmentTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -259,24 +267,24 @@ export default function SmithCalculator() {
                 <label className="block text-sm font-medium mb-1">難易度</label>
                 <input
                   type="number"
-                  value={input.difficulty}
+                  value={input.difficulty ?? ''}
                   onChange={(e) => setInput(prev => ({
                     ...prev,
-                    difficulty: parseInt(e.target.value) || 0
+                    difficulty: e.target.value === '' ? undefined : parseInt(e.target.value) || 0
                   }))}
-                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">基礎潜在値</label>
                 <input
                   type="number"
-                  value={input.basePotential}
+                  value={input.basePotential ?? ''}
                   onChange={(e) => setInput(prev => ({
                     ...prev,
-                    basePotential: parseInt(e.target.value) || 0
+                    basePotential: e.target.value === '' ? undefined : parseInt(e.target.value) || 0
                   }))}
-                  className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
             </div>
@@ -301,9 +309,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.dex}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.dex ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -311,9 +319,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.str}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.str ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -321,9 +329,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.dexPercent}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.dexPercent ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -331,9 +339,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.strPercent}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.strPercent ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                       </div>
@@ -355,9 +363,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.dex}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.dex ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -365,9 +373,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.str}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.str ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -375,9 +383,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.dexPercent}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.dexPercent ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -385,9 +393,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.strPercent}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.strPercent ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                       </div>
@@ -409,9 +417,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.dex}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.dex ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -419,9 +427,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.str}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.str ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -429,9 +437,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.dexPercent}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.dexPercent ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                         <div>
@@ -439,9 +447,9 @@ export default function SmithCalculator() {
                           <input
                             type="number"
                             min="0"
-                            value={stats.strPercent}
-                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', parseInt(e.target.value) || 0)}
-                            className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            value={stats.strPercent ?? ''}
+                            onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
                       </div>
