@@ -583,7 +583,7 @@ export default function SmithCalculator() {
               
               <div className="bg-white p-4 rounded-lg">
                 <div className="text-2xl font-bold text-purple-600 mb-1">
-                  {result.finalPotential.toFixed(2)}
+                  {Math.floor(result.finalPotential)}
                 </div>
                 <div className="text-sm text-gray-600">最終潜在値</div>
               </div>

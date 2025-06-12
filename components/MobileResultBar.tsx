@@ -20,7 +20,7 @@ export default function MobileResultBar({ result }: MobileResultBarProps) {
         
         <div className="flex-1 text-center border-l border-gray-200">
           <div className="text-lg font-bold text-purple-600">
-            {result.finalPotential.toFixed(1)}
+            {Math.floor(result.finalPotential)}
           </div>
           <div className="text-xs text-gray-600">最終潜在値</div>
         </div>
