@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { calculateSmithing } from '../lib/calculations';
 import type { SmithingInput, EquipmentType } from '../lib/types';
 import { saveCurrentData, loadCurrentData } from '../lib/localStorage';
+import MobileResultBar from './MobileResultBar';
 
 const equipmentTypes: EquipmentType[] = [
   '片手剣',
@@ -112,7 +113,7 @@ export default function SmithCalculator() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-6 lg:space-y-8">
+    <div className="max-w-7xl mx-auto p-4 lg:p-6 pb-20 md:pb-6 space-y-6 lg:space-y-8">
       <h1 className="text-xl lg:text-3xl font-bold text-center mb-4 lg:mb-6 text-blue-600">
         トーラム スミス成功率計算
       </h1>
@@ -142,6 +143,12 @@ export default function SmithCalculator() {
                         updateCharacterStat(stat, isNaN(numValue) ? 1 : numValue);
                       }
                     }}
+                    onMouseDown={(e) => {
+                      if (document.activeElement === e.target) {
+                        e.preventDefault();
+                        updateCharacterStat(stat, undefined);
+                      }
+                    }}
                     className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
@@ -165,6 +172,12 @@ export default function SmithCalculator() {
                       ...prev,
                       smithProficiency: e.target.value === '' ? undefined : Math.max(0, parseInt(e.target.value) || 0)
                     }))}
+                    onMouseDown={(e) => {
+                      if (document.activeElement === e.target) {
+                        e.preventDefault();
+                        setInput(prev => ({ ...prev, smithProficiency: undefined }));
+                      }
+                    }}
                     className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                   />
                 </div>
@@ -228,6 +241,12 @@ export default function SmithCalculator() {
                   min="0"
                   value={input.food.str ?? ''}
                   onChange={(e) => updateFood('str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                  onMouseDown={(e) => {
+                    if (document.activeElement === e.target) {
+                      e.preventDefault();
+                      updateFood('str', undefined);
+                    }
+                  }}
                   className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
@@ -238,6 +257,12 @@ export default function SmithCalculator() {
                   min="0"
                   value={input.food.dex ?? ''}
                   onChange={(e) => updateFood('dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                  onMouseDown={(e) => {
+                    if (document.activeElement === e.target) {
+                      e.preventDefault();
+                      updateFood('dex', undefined);
+                    }
+                  }}
                   className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
@@ -272,6 +297,12 @@ export default function SmithCalculator() {
                     ...prev,
                     difficulty: e.target.value === '' ? undefined : parseInt(e.target.value) || 0
                   }))}
+                  onMouseDown={(e) => {
+                    if (document.activeElement === e.target) {
+                      e.preventDefault();
+                      setInput(prev => ({ ...prev, difficulty: undefined }));
+                    }
+                  }}
                   className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
@@ -284,6 +315,12 @@ export default function SmithCalculator() {
                     ...prev,
                     basePotential: e.target.value === '' ? undefined : parseInt(e.target.value) || 0
                   }))}
+                  onMouseDown={(e) => {
+                    if (document.activeElement === e.target) {
+                      e.preventDefault();
+                      setInput(prev => ({ ...prev, basePotential: undefined }));
+                    }
+                  }}
                   className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                 />
               </div>
@@ -311,6 +348,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.dex ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'dex', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -321,6 +364,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.str ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'str', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -331,6 +380,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.dexPercent ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -341,6 +396,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.strPercent ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -365,6 +426,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.dex ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'dex', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -375,6 +442,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.str ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'str', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -385,6 +458,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.dexPercent ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -395,6 +474,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.strPercent ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -419,6 +504,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.dex ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dex', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'dex', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -429,6 +520,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.str ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'str', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'str', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -439,6 +536,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.dexPercent ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'dexPercent', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -449,6 +552,12 @@ export default function SmithCalculator() {
                             min="0"
                             value={stats.strPercent ?? ''}
                             onChange={(e) => updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', e.target.value === '' ? undefined : parseInt(e.target.value) || 0)}
+                            onMouseDown={(e) => {
+                              if (document.activeElement === e.target) {
+                                e.preventDefault();
+                                updateEquipmentStat(key as keyof typeof input.equipment, 'strPercent', undefined);
+                              }
+                            }}
                             className="w-full px-2 py-1 border border-gray-300 rounded outline-blue-500"
                           />
                         </div>
@@ -506,6 +615,9 @@ export default function SmithCalculator() {
 
         </div>
       </div>
+      
+      {/* モバイル用固定結果バー */}
+      <MobileResultBar result={result} />
     </div>
   );
 }
