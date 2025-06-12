@@ -12,7 +12,7 @@ export default function MobileResultBar({ result }: MobileResultBarProps) {
       <div className="flex justify-between items-center text-sm">
         <div className="flex-1 text-center">
           <div className="text-lg font-bold text-blue-600">
-            {result.successRate.toFixed(1)}%
+            {(Math.floor(result.successRate * 10) / 10).toFixed(1)}%
           </div>
           <div className="text-xs text-gray-600">成功率</div>
         </div>
