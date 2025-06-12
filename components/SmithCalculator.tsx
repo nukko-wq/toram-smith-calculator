@@ -20,12 +20,12 @@ const equipmentTypes: EquipmentType[] = [
 
 const defaultInput: SmithingInput = {
   characterStats: {
-    str: undefined,
-    dex: undefined,
-    vit: undefined,
-    agi: undefined,
-    int: undefined,
-    tec: undefined,
+    str: 1,
+    dex: 1,
+    vit: 1,
+    agi: 1,
+    int: 1,
+    tec: 1,
   },
   equipment: {
     main: { dex: undefined, dexPercent: undefined, str: undefined, strPercent: undefined },
@@ -83,12 +83,12 @@ export default function SmithCalculator() {
     }));
   };
 
-  const updateFood = (stat: keyof typeof input.food, value: number) => {
+  const updateFood = (stat: keyof typeof input.food, value: number | undefined) => {
     setInput(prev => ({
       ...prev,
       food: {
         ...prev.food,
-        [stat]: Math.max(0, value),
+        [stat]: value === undefined || value === 0 ? undefined : Math.max(0, value),
       },
     }));
   };
