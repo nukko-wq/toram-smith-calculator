@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { calculateSmithing } from '../lib/calculations';
 import type { SmithingInput, EquipmentType } from '../lib/types';
 import { saveCurrentData, loadCurrentData } from '../lib/localStorage';
+import MobileResultBar from './MobileResultBar';
 
 const equipmentTypes: EquipmentType[] = [
   '片手剣',
@@ -112,7 +113,7 @@ export default function SmithCalculator() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-6 lg:space-y-8">
+    <div className="max-w-7xl mx-auto p-4 lg:p-6 pb-20 md:pb-6 space-y-6 lg:space-y-8">
       <h1 className="text-xl lg:text-3xl font-bold text-center mb-4 lg:mb-6 text-blue-600">
         トーラム スミス成功率計算
       </h1>
@@ -614,6 +615,9 @@ export default function SmithCalculator() {
 
         </div>
       </div>
+      
+      {/* モバイル用固定結果バー */}
+      <MobileResultBar result={result} />
     </div>
   );
 }
