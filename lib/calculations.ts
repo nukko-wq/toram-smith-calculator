@@ -90,25 +90,25 @@ function calculateSuccessRate(input: SmithingInput, totalStr: number, totalDex: 
 function calculateBasePotentialIncrease(equipmentType: EquipmentType, stats: CharacterStats): number {
   switch (equipmentType) {
     case '片手剣':
-      return ((stats.str ?? 1) + (stats.dex ?? 1)) / 20;
+      return intFloor(((stats.str ?? 1) + (stats.dex ?? 1)) / 20);
     case '両手剣':
-      return (stats.str ?? 1) / 10;
+      return intFloor((stats.str ?? 1) / 10);
     case '弓':
-      return ((stats.str ?? 1) + (stats.dex ?? 1)) / 20;
+      return intFloor(((stats.str ?? 1) + (stats.dex ?? 1)) / 20);
     case '自動弓':
-      return (stats.dex ?? 1) / 10;
+      return intFloor((stats.dex ?? 1) / 10);
     case '杖':
-      return (stats.int ?? 1) / 10;
+      return intFloor((stats.int ?? 1) / 10);
     case '魔道具':
-      return ((stats.int ?? 1) + (stats.agi ?? 1)) / 20;
+      return intFloor(((stats.int ?? 1) + (stats.agi ?? 1)) / 20);
     case '手甲':
-      return (stats.agi ?? 1) / 10;
+      return intFloor((stats.agi ?? 1) / 10);
     case '旋風槍':
-      return ((stats.str ?? 1) + (stats.agi ?? 1)) / 20;
+      return intFloor(((stats.str ?? 1) + (stats.agi ?? 1)) / 20);
     case '抜刀剣':
-      return ((stats.dex ?? 1) + (stats.agi ?? 1)) / 20;
+      return intFloor(((stats.dex ?? 1) + (stats.agi ?? 1)) / 20);
     case '体防具':
-      return (stats.vit ?? 1) / 10;
+      return intFloor((stats.vit ?? 1) / 10);
     default:
       return 0;
   }
@@ -118,16 +118,16 @@ function calculateBasePotentialIncrease(equipmentType: EquipmentType, stats: Cha
  * 潜在値上昇量を計算
  */
 function calculatePotentialIncrease(input: SmithingInput): number {
-  const { characterStats, skills } = input;
+  const { characterStats, skills, basePotential } = input;
   
   // キャラステータスによる潜在値上昇量
   const basePotentialIncrease = calculateBasePotentialIncrease(input.equipmentType, characterStats);
   
-  // 丁寧な制作補正
-  const carefulCraftingBonus = basePotentialIncrease * (skills.carefulCrafting / 100);
+  // 丁寧な制作補正（基礎潜在値に対して、小数点以下切り捨て）
+  const carefulCraftingBonus = intFloor((basePotential ?? 0) * (skills.carefulCrafting / 100));
   
-  // 匠の製作技術補正
-  const masterCraftingBonus = basePotentialIncrease * (skills.masterCrafting * 2 / 100);
+  // 匠の製作技術補正（基礎潜在値に対して、小数点以下切り捨て）
+  const masterCraftingBonus = intFloor((basePotential ?? 0) * (skills.masterCrafting * 2 / 100));
   
   // 総潜在値上昇量
   return basePotentialIncrease + carefulCraftingBonus + masterCraftingBonus;
